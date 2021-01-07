@@ -72,7 +72,7 @@
             <nav class="amado-nav">
                 <ul>
                     <li><a href="#">Home</a></li>
-                    <li class="active"><a href="shop.html">Shop</a></li>
+                    <li class="active"><a href="loadShopPage.shop">Shop</a></li>
                     <li><a href="#">Product</a></li>
                     <li><a href="#">Cart</a></li>
                     <li><a href="#">Checkout</a></li>
@@ -109,13 +109,13 @@
                 <!--  Catagories  -->
                 <div class="catagories-menu">
                     <ul>
-                        <li class="active"><a href="#">Chairs</a></li>
-                        <li><a href="#">Beds</a></li>
-                        <li><a href="#">Accesories</a></li>
-                        <li><a href="#">Furniture</a></li>
-                        <li><a href="#">Home Deco</a></li>
-                        <li><a href="#">Dressings</a></li>
-                        <li><a href="#">Tables</a></li>
+                        <li class="active"><a href="loadShopPage.shop?category=chair">Chairs</a></li>
+                        <li><a href="loadShopPage.shop?category=bed">Beds</a></li>
+                        <li><a href="loadShopPage.shop?category=accesory">Accesories</a></li>
+                        <li><a href="loadShopPage.shop?category=furniture">Furniture</a></li>
+                        <li><a href="loadShopPage.shop?category=home deco">Home Deco</a></li>
+                        <li><a href="loadShopPage.shop?category=dressing">Dressings</a></li>
+                        <li><a href="loadShopPage.shop?category=table">Tables</a></li>
                     </ul>
                 </div>
             </div>
@@ -177,17 +177,18 @@
             <div class="widget price mb-50">
                 <!-- Widget Title -->
                 <h6 class="widget-title mb-30">Price</h6>
-
+				
                 <div class="widget-desc">
                     <div class="slider-range">
-                        <div data-min="10" data-max="1000" data-unit="$" class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" data-value-min="10" data-value-max="1000" data-label-result="">
+                        <div data-min="10" id="price_slider" data-max="1000" data-unit="$" class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" data-value-min="10" data-value-max="1000" data-label-result="">
                             <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
-                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                            <span class="ui-slider-handle ui-state-default ui-corner-all" id="price_min" tabindex="0"></span>
                             <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
                         </div>
                         <div class="range-price">$10 - $1000</div>
                     </div>
                 </div>
+			 <button type="button" class="btn btn-primary" data-toggle="button" id='btn_price' autocomplete="off"  aria-pressed='false'>가격 검색</button>
             </div>
         </div>
 
@@ -213,11 +214,12 @@
                             <div class="product-sorting d-flex">
                                 <div class="sort-by-date d-flex align-items-center mr-15">
                                     <p>Sort by</p>
-                                    <form action="#" method="get">
-                                        <select name="select" id="sortBydate">
-                                            <option value="value">Date</option>
-                                            <option value="value">Newest</option>
-                                            <option value="value">Popular</option>
+                                    <form action="loadShopPage.shop" id="frm_sort" method="get">
+                                        <select name="orderBy" id="select_sort">
+                                            <option id="sortname" value="productname">Name ↑</option>
+                                            <option id="sortnamed" value="productname desc">Name ↓</option>
+                                            <option id="sortprice" value="productprice">Price ↑</option>
+                                            <option id="sortpriced" value="productprice desc">Price ↓</option>
                                         </select>
                                     </form>
                                 </div>
@@ -253,7 +255,7 @@
                                 <!-- Product Meta Data -->
                                 <div class="product-meta-data">
                                     <div class="line"></div>
-                                    <p class="product-price">${p.PRODUCTPRICE }</p>
+                                    <p class="product-price">$ ${p.PRODUCTPRICE }</p>
                                     <a href="#">
                                         <h6>${p.PRODUCTNAME }</h6>
                                     </a>
@@ -390,7 +392,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script src="<c:url value="/resources/js/active.js" />"></script>
 	
 	<script>
-	//load
+	//load : sold out check box remain
 	$(document).ready(function(){
 		if($('#soldout').attr('value')=='true'){
 			$('#btn_soldout').attr('aria-pressed','false');
@@ -399,7 +401,27 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			$('#btn_soldout').attr('aria-pressed','true');	
 			$('#btn_soldout').html('품질 상품 제외 보기');
 			}
+		//load : order by select remain
+		if($('#orderBy').attr('value')=='productname'){
+			alert('n');
+			$('#sortname').atter('selected','selected');
+		}else if($('#select_sort').attr('value')=='productname desc'){
+			alert('nd');
+			$('#sortnamed').atter('selected','selected');
+		}else if($('#select_sort').attr('value')=='productprice'){
+			alert('p');
+			$('#sortprice').atter('selected','selected');
+		}else if($('#select_sort').attr('value')=='productprice desc'){
+			alert('pd');
+			$('#sortpriced').atter('selected','selected');
+		}
+		
 	});
+	
+	
+	
+	
+	
 	// 	sold out check box
 	$('#btn_soldout').click(function(){
 		var aria = $('#btn_soldout').attr('aria-pressed');
@@ -420,6 +442,20 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		$('#frm_prevo').submit();
 		
 	});
+	
+	//price search button
+	
+	$('#btn_price').click(function(){
+		$('#minPrice').attr('value',$('#price_slider').slider('values')[0]);
+		$('#maxPrice').attr('value',$('#price_slider').slider('values')[1]);
+		$('#frm_prevo').submit();
+	});
+	
+	//sort select
+	
+	$('#select_sort').change(function(){
+		$('#frm_sort').submit();
+	})
 	
 	</script>
 

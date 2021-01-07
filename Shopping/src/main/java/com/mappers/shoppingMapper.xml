@@ -6,12 +6,27 @@
 SELECT *
 FROM 
 	(SELECT ROWNUM RM,P.* 
-	FROM PRODUCT P 
-	<where>
-	 <if test="soldout=='true'">
-	 P.PRODUCTCOUNT >0
+	FROM
+		(SELECT * FROM PRODUCT  
+	<if test="orderBy !=null and orderBy != ''">	
+		ORDER BY ${orderBy}
 	 </if>
-	 </where>)
+	 	) P
+	Where 1=1
+	 <if test="soldout=='true'">
+	 AND P.PRODUCTCOUNT >0
+	 </if>
+	 <if test="minPrice != null and minPrice != ''">
+	 <![CDATA[AND P.PRODUCTPRICE >= ${minPrice}]]>
+	 </if>
+	 <if test="maxPrice != null and maxPrice != ''">
+	 <![CDATA[AND P.PRODUCTPRICE <= ${maxPrice}]]>
+	 </if>
+	 <if test="category !=null and category != ''">
+	 AND P.PRODUCTCATE = #{category}
+	 </if>
+	 
+	 )
 
 
 WHERE <![CDATA[ RM>=${startNum} AND RM<=${endNum}]]>
@@ -21,12 +36,23 @@ WHERE <![CDATA[ RM>=${startNum} AND RM<=${endNum}]]>
 SELECT COUNT(*)
 FROM
 	(SELECT ROWNUM RM,P.* 
-	FROM PRODUCT P 
-	<where>
-	 <if test="soldout=='true'">
-	 P.PRODUCTCOUNT >0
+	FROM
+		(SELECT * FROM PRODUCT  
+	<if test="orderBy !=null and orderBy != ''">	
+		ORDER BY ${orderBy}
 	 </if>
-	 </where>)
+	 	) P
+	Where 1=1
+	 <if test="soldout=='true'">
+	 AND P.PRODUCTCOUNT >0
+	 </if>
+	 <if test="minPrice != null and minPrice != ''">
+	 <![CDATA[AND P.PRODUCTPRICE >= ${minPrice}]]>
+	 </if>
+	 <if test="maxPrice != null and maxPrice != ''">
+	 <![CDATA[AND P.PRODUCTPRICE <= ${maxPrice}]]>
+	 </if>
+	 )
 </select>
 
 
